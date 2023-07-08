@@ -1,0 +1,27 @@
+﻿@page
+@model OPMLRender.Pages.XMLParserModel
+@{
+}
+
+<div class="container">
+    <div class="row justify-content-center">
+        @foreach (var item in Model.ItemsDetails)
+        {
+            <div class="col-md-6 col-lg-4">
+                <div class="card mb-4">
+                    <div class="card-body">
+                        <h2 class="card-title">@item.PubDate</h2>
+                        <p class="card-text">@Html.Raw(@item.Description)</p>
+                        <div class="text-center">
+                            @if (!string.IsNullOrEmpty(item.Link))
+                            {
+                                <a href="@item.Link" target="_blank" class="btn btn-primary">Go to Source</a>
+                            }
+                        </div>
+                    </div>
+                </div>
+            </div>
+        }
+    </div>
+</div>
+
