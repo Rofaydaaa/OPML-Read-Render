@@ -1,0 +1,60 @@
+# Visual Studio generated files and folders
+.vs/
+bin/
+obj/
+
+# User-specific files
+*.user*
+*.suo
+*.cache
+*.bak
+*.resharper*
+*.resharper.user
+*._ReSharper*
+
+# Build results
+[Dd]ebug/
+[Rr]elease/
+x64/
+build/
+
+# NuGet packages
+*/packages/*
+!**/packages/*.nupkg
+*.nuget.props
+*.nuget.targets
+
+# MSTest test Results
+[Tt]est[Rr]esult*/
+[Bb]uild[Ll]og.*
+
+# Publish profiles
+*.pubxml
+*.publishsettings
+
+# .NET Core
+project.lock.json
+project.fragment.lock.json
+artifacts/
+**/Properties/launchSettings.json
+
+# Visual Studio code coverage
+*.coverage
+*.coveragexml
+
+# Windows Azure Build Output
+csx/
+*.build.csdef
+
+# Windows Store app package directories and files
+AppPackages/
+BundleArtifacts/
+Package.StoreAssociation.xml
+*_StoreSigned.appx
+
+# Others
+ClientBin/
+~$*
+*~
+*.log
+*.swp
