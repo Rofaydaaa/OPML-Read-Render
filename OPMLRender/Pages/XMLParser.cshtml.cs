@@ -22,6 +22,11 @@ namespace OPMLRender.Pages
         {
             try
             {
+                if (!Request.Query.ContainsKey("link"))
+                {
+                    _logger.LogError("Feed link is not found");
+                    return RedirectToPage("/Error");
+                }
                 var httpClient = _httpClientFactory.CreateClient();
                 var response = await httpClient.GetAsync(Request.Query["link"]);
                 XmlDocument xmlDoc = new XmlDocument();
