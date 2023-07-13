@@ -1,12 +1,12 @@
 ﻿@page
-@model IndexModel
+@model OPMLRender.Pages.FavoritesModel
 @{
     int totalPages = (int)ViewData["TotalPages"];
     int currentPage = (int)ViewData["CurrentPage"];
 }
 
 <div class="container">
-    @foreach (var item in Model.FeedsDetails)
+    @foreach (var item in Model.FavoriteFeeds)
     {
         <div class="row">
             <div class="col col-md-12 mb-4">
@@ -17,7 +17,6 @@
                             <a href="/XMLParser?link=@item.Link" target="_blank" class="btn btn-primary">Read Page</a>
                             <form method="post" asp-page-handler="ToggleFavorite" class="d-inline">
                                 <input type="hidden" name="link" value="@item.Link" />
-                                <input type="hidden" name="title" value="@item.Title" />
                                 <button type="submit" class="btn btn-sm @(item.IsFavorite ? "btn-favorite" : "btn-unfavorite")">
                                     <i class="fa fa-star"></i> @(item.IsFavorite ? "Unstar" : "star")
                                 </button>
@@ -55,4 +54,3 @@
         border: 1px solid black;
     }
 </style>
-
