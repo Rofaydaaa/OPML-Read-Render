@@ -75,34 +75,6 @@ namespace OPMLRender.Pages
                 return RedirectToPage("/Error");
             }
         }
-
-        public async Task<IActionResult> OnPostToggleFavorite(string link, string title, int page)
-        {
-            try
-            {
-                var favoriteFeeds = JsonSerializer.Deserialize<List<FeedDetails>>(Request.Cookies["StarFeeds"]);
-                var favoriteFeed = favoriteFeeds.FirstOrDefault(f => f.Link == link);
-                var feed = favoriteFeeds.FirstOrDefault(f => f.Link == link);
-                if (feed != null)
-                {
-                    favoriteFeeds.Remove(feed);
-                    feed.IsFavorite = false;
-                }
-                else
-                {
-                    feed = new FeedDetails { Link = link, Title = title, IsFavorite = true };
-                    favoriteFeeds.Add(feed);
-                }
-                var serializedFavoriteFeeds = JsonSerializer.Serialize(favoriteFeeds);
-                Response.Cookies.Append("StarFeeds", serializedFavoriteFeeds);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(ex, "Error occurred while toggling favorite status.");
-            }
-
-            return RedirectToPage();
-        }
     }
 
     public class FeedDetails

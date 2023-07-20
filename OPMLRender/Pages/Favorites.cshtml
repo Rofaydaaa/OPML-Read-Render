@@ -5,6 +5,8 @@
     int currentPage = (int)ViewData["CurrentPage"];
 }
 
+<script src="https://unpkg.com/htmx.org@1.9.3" integrity="sha384-lVb3Rd/Ca0AxaoZg5sACe8FJKF0tnUgR2Kd7ehUOG5GCcROv5uBIZsOqovBAcWua" crossorigin="anonymous"></script>
+
 <div class="container">
     @foreach (var item in Model.FavoriteFeeds)
     {
@@ -15,9 +17,10 @@
                         <h4 class="card-title">@item.Title</h4>
                         <div class="text-center">
                             <a href="/XMLParser?link=@item.Link" target="_blank" class="btn btn-primary">Read Page</a>
-                            <form method="post" asp-page-handler="ToggleFavorite" class="d-inline">
+                            <form method="post" data-link="@item.Link" hx-trigger="confirmed" hx-boost="closest .row" hx-post="/toggle-fav">
                                 <input type="hidden" name="link" value="@item.Link" />
-                                <button type="submit" class="btn btn-sm @(item.IsFavorite ? "btn-favorite" : "btn-unfavorite")">
+                                <input type="hidden" name="title" value="@item.Title" />
+                                <button type="submit" class="btn btn-sm @(item.IsFavorite ? "btn-favorite" : "btn-unfavorite") favorite-button">
                                     <i class="fa fa-star"></i> @(item.IsFavorite ? "Unstar" : "star")
                                 </button>
                             </form>
@@ -54,3 +57,33 @@
         border: 1px solid black;
     }
 </style>
+
+<script>
+    function deleteFavorite(event) {
+        const form = event.target;
+        const formData = new FormData(form);
+
+        fetch('/toggle-fav', {
+            method: 'post',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                if (!data.IsFavorite) {
+                    const row = form.closest('.row');
+                    row.parentElement.removeChild(row);
+                }
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    const favoriteForms = document.querySelectorAll('form[data-link]');
+    favoriteForms.forEach(form => {
+        form.addEventListener('submit', (event) => {
+            event.preventDefault();
+            deleteFavorite(event);
+        });
+    });
+</script>

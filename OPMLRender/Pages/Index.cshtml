@@ -5,6 +5,8 @@
     int currentPage = (int)ViewData["CurrentPage"];
 }
 
+<script src="https://unpkg.com/htmx.org@1.9.3" integrity="sha384-lVb3Rd/Ca0AxaoZg5sACe8FJKF0tnUgR2Kd7ehUOG5GCcROv5uBIZsOqovBAcWua" crossorigin="anonymous"></script>
+
 <div class="container">
     @foreach (var item in Model.FeedsDetails)
     {
@@ -15,13 +17,15 @@
                         <h4 class="card-title">@item.Title</h4>
                         <div class="text-center">
                             <a href="/XMLParser?link=@item.Link" target="_blank" class="btn btn-primary">Read Page</a>
-                            <form method="post" asp-page-handler="ToggleFavorite" class="d-inline">
-                                <input type="hidden" name="link" value="@item.Link" />
-                                <input type="hidden" name="title" value="@item.Title" />
-                                <button type="submit" class="btn btn-sm @(item.IsFavorite ? "btn-favorite" : "btn-unfavorite")">
-                                    <i class="fa fa-star"></i> @(item.IsFavorite ? "Unstar" : "star")
-                                </button>
-                            </form>
+                            <div hx-target=".card">
+                                <form method="post" action="/toggle-fav" data-link="@item.Link">
+                                    <input type="hidden" name="link" value="@item.Link" />
+                                    <input type="hidden" name="title" value="@item.Title" />
+                                    <button type="button" class="btn btn-sm @(item.IsFavorite ? "btn-favorite" : "btn-unfavorite") favorite-button" data-link="@item.Link">
+                                        <i class="fa fa-star"></i> @(item.IsFavorite ? "Unstar" : "Star")
+                                    </button>
+                                </form>
+                            </div>
                         </div>
                     </div>
                 </div>
@@ -55,4 +59,34 @@
         border: 1px solid black;
     }
 </style>
+
+<script>
+    function toggleFavorite(link) {
+        const form = document.querySelector(`form[data-link="${link}"]`);
+        const formData = new FormData(form);
+
+        fetch('/toggle-fav', {
+            method: 'POST',
+            body: formData
+        })
+            .then(response => response.json())
+            .then(data => {
+                // Update the button based on the response sent from program.cs
+                const button = document.querySelector(`.favorite-button[data-link="${link}"]`);
+                button.classList.toggle("btn-favorite", data.IsFavorite);
+                button.classList.toggle("btn-unfavorite", !data.IsFavorite);
+                button.innerHTML = `<i class="fa fa-star"></i> ${data.IsFavorite ? "Unstar" : "Star"}`;
+            })
+            .catch(error => {
+                console.error('Error:', error);
+            });
+    }
+
+    // Add click event listeners
+    const favoriteButtons = document.querySelectorAll('.favorite-button');
+    favoriteButtons.forEach(button => {
+        const link = button.getAttribute('data-link');
+        button.addEventListener('click', () => toggleFavorite(link));
+    });
+</script>
 
